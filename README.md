@@ -21,7 +21,7 @@ DockCat 是一只住在 macOS 程序坞里的桌面陪伴小猫。
 
 最新版本面向 macOS 12 及以上系统，支持 Intel Mac 和 Apple Silicon Mac。
 
-Windows 移植版本正在准备中。
+Windows 用户可以查看[社区移植版本](https://github.com/yitian-ma/DockCatWin)。
 
 ## 快速使用
 
