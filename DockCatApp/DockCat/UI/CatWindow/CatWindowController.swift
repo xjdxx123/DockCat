@@ -124,7 +124,7 @@ final class CatWindowController {
         primaryTitle: String,
         onPrimary: @escaping () -> Void
     ) {
-        let minimumHeight: CGFloat = image == nil ? 86 : 180
+        let minimumHeight: CGFloat = 86
         bubbleSize = imageBubbleSize(message: message, width: 260, minimumHeight: minimumHeight, hasImage: image != nil, hasImageTitle: imageTitle?.isEmpty == false)
         bubbleView.isHidden = false
         updateLayoutPreservingAnchor(catSize: catView.frame.size)
@@ -211,7 +211,8 @@ final class CatWindowController {
         let textHeight = measuredTextHeight(message, width: width - 20)
         let imageBlockHeight: CGFloat = hasImage ? 80 : 0
         let imageTitleHeight: CGFloat = hasImage && hasImageTitle ? 20 : 0
-        return CGSize(width: width, height: max(minimumHeight, ceil(textHeight) + imageBlockHeight + imageTitleHeight + 64))
+        let contentPadding: CGFloat = hasImage && hasImageTitle ? 68 : 64
+        return CGSize(width: width, height: max(minimumHeight, ceil(textHeight) + imageBlockHeight + imageTitleHeight + contentPadding))
     }
 
     private func measuredTextHeight(_ text: String, width: CGFloat) -> CGFloat {

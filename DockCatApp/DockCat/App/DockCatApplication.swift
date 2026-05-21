@@ -497,6 +497,7 @@ final class DockCatApplication: NSObject, NSApplicationDelegate {
     }
 
     private func applyState(_ state: CatState) {
+        stopWalk()
         switch state {
         case .transitioning:
             catWindow.hideBubble()
