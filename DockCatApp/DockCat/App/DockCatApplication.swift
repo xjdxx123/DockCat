@@ -1005,12 +1005,27 @@ final class DockCatApplication: NSObject, NSApplicationDelegate {
             let point = clampedCatPoint(stateMachine.position)
             stateMachine.updateLongDurationPosition(point)
             catWindow.show(at: point)
+            showPetBalanceBubble()
         case .walking:
             walkDirection *= -1
             catWindow.setMirrored(walkDirection < 0)
+            showPetBalanceBubble()
         default:
             return
         }
+    }
+
+    private func showPetBalanceBubble() {
+        let message = PetBalanceMessenger.message(
+            snapshots: llmUsageService.snapshots,
+            lastSuccessful: llmUsageService.lastSuccessful,
+            strings: strings
+        )
+        catWindow.showBubble(
+            message: message,
+            primaryTitle: strings.petBubbleDismiss,
+            onPrimary: { [weak self] in self?.catWindow.hideBubble() }
+        )
     }
 
     private func clampedCatPoint(_ point: CGPoint) -> CGPoint {
