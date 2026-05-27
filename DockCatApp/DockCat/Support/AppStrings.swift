@@ -414,3 +414,31 @@ extension AppStrings {
         }
     }
 }
+
+extension AppStrings {
+    // 摸摸·余额气泡
+    var petBubbleNoLLM: String {
+        language == .chinese ? "还没配置任何 LLM 账号呢" : "No LLM accounts configured yet"
+    }
+
+    var petBubbleDismiss: String {
+        language == .chinese ? "好的" : "OK"
+    }
+
+    func petBubbleMessage(providerID: LLMProviderID, data: UsageData) -> String {
+        let name = providerID.displayName
+        if let balance = data.balance {
+            return language == .chinese
+                ? "你在 \(name) 还剩 \(balance.formattedDisplay())"
+                : "You have \(balance.formattedDisplay()) left on \(name)"
+        } else if let spent = data.totalSpent {
+            return language == .chinese
+                ? "你这个月在 \(name) 花了 \(spent.formattedDisplay())"
+                : "You spent \(spent.formattedDisplay()) on \(name) this month"
+        } else {
+            return language == .chinese
+                ? "\(name) 现在没数据呢"
+                : "\(name) has no data right now"
+        }
+    }
+}
