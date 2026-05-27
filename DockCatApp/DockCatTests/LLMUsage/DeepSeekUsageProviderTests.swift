@@ -49,7 +49,7 @@ final class DeepSeekUsageProviderTests: XCTestCase {
         guard case .failure(let reason) = snapshot.state else {
             return XCTFail("expected .failure, got \(snapshot.state)")
         }
-        XCTAssertTrue(reason.contains("401") || reason.contains("Invalid"))
+        XCTAssertTrue(reason.contains("401"), "got: \(reason)")
     }
 
     func testNoCNYBalance_returnsZero() async throws {
