@@ -7,6 +7,7 @@ struct Money: Codable, Equatable, Hashable {
     func formattedDisplay() -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
+        formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.minimumFractionDigits = 2
         formatter.maximumFractionDigits = 2
         let amountString = formatter.string(from: amount as NSDecimalNumber) ?? "\(amount)"
