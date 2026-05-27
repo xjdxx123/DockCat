@@ -91,7 +91,7 @@ final class LLMUsageService: ObservableObject {
             } catch {
                 snapshot = ProviderUsageSnapshot(
                     providerID: id, fetchedAt: now(),
-                    state: .failure(reason: error.localizedDescription)
+                    state: .failure(.unknown(detail: error.localizedDescription))
                 )
             }
         } else {

@@ -80,8 +80,11 @@ final class OpenAIUsageProviderTests: XCTestCase {
                             jsonString: #"{"error":{"message":"invalid_api_key"}}"#)
         let provider = OpenAIUsageProvider(session: URLSessionStub.makeSession())
         let snapshot = try await provider.fetchUsage(apiKey: "sk-bad")
-        guard case .failure = snapshot.state else {
+        guard case .failure(let error) = snapshot.state else {
             return XCTFail("expected .failure")
+        }
+        if case .invalidKey = error {} else {
+            XCTFail("expected .invalidKey error, got \(error)")
         }
     }
 

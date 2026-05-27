@@ -46,10 +46,14 @@ final class DeepSeekUsageProviderTests: XCTestCase {
         )
         let provider = DeepSeekUsageProvider(session: URLSessionStub.makeSession())
         let snapshot = try await provider.fetchUsage(apiKey: "sk-bad")
-        guard case .failure(let reason) = snapshot.state else {
+        guard case .failure(let error) = snapshot.state else {
             return XCTFail("expected .failure, got \(snapshot.state)")
         }
-        XCTAssertTrue(reason.contains("401"), "got: \(reason)")
+        if case .http(let status, _) = error {
+            XCTAssertEqual(status, 401)
+        } else {
+            XCTFail("expected .http error, got \(error)")
+        }
     }
 
     func testNoCNYBalance_returnsZero() async throws {

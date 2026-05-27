@@ -18,7 +18,7 @@ final class ProviderUsageSnapshotCodableTests: XCTestCase {
         let snapshot = ProviderUsageSnapshot(
             providerID: .anthropic,
             fetchedAt: Date(timeIntervalSince1970: 1_700_000_000),
-            state: .keyValidNoUsageAccess(hint: "Admin key required")
+            state: .keyValidNoUsageAccess
         )
         let data = try JSONEncoder().encode(snapshot)
         let decoded = try JSONDecoder().decode(ProviderUsageSnapshot.self, from: data)
@@ -53,7 +53,7 @@ final class ProviderUsageSnapshotCodableTests: XCTestCase {
         let snapshot = ProviderUsageSnapshot(
             providerID: .openai,
             fetchedAt: Date(timeIntervalSince1970: 1_700_000_000),
-            state: .failure(reason: "Invalid API key")
+            state: .failure(.invalidKey)
         )
         let data = try JSONEncoder().encode(snapshot)
         let decoded = try JSONDecoder().decode(ProviderUsageSnapshot.self, from: data)

@@ -33,9 +33,9 @@ struct OpenAIUsageProvider: LLMUsageProvider {
             break
         case .failure(let error):
             if case .http(let status, _) = error, status == 401 || status == 403 {
-                return .failure(reason: "Invalid API key")
+                return .failure(.invalidKey)
             }
-            return .failure(reason: error.errorDescription ?? "未知错误")
+            return .failure(mapError(error))
         }
 
         // 2. Usage report — requires admin key. 401/403 here means the key is valid
@@ -50,9 +50,9 @@ struct OpenAIUsageProvider: LLMUsageProvider {
             usage = value
         case .failure(let error):
             if case .http(let status, _) = error, status == 401 || status == 403 {
-                return .keyValidNoUsageAccess(hint: "此 key 有效，但需要 Admin Key 才能查询用量")
+                return .keyValidNoUsageAccess
             }
-            return .failure(reason: error.errorDescription ?? "未知错误")
+            return .failure(mapError(error))
         }
 
         // 3. Cost report (best effort) — degrade gracefully if it fails.
@@ -99,6 +99,21 @@ struct OpenAIUsageProvider: LLMUsageProvider {
             totalSpentLabel: .thisMonth,
             modelBreakdown: breakdown
         ))
+    }
+
+    private func mapError(_ error: LLMUsageError) -> ProviderUsageError {
+        switch error {
+        case .network(let underlying):
+            return .network(detail: underlying.localizedDescription)
+        case .http(let status, let body):
+            return .http(status: status, body: body)
+        case .decoding:
+            return .decoding
+        case .keychain(let status):
+            return .keychain(status: status)
+        case .cancelled:
+            return .unknown(detail: "cancelled")
+        }
     }
 
     private func makeRequest(url: URL, apiKey: String) -> URLRequest {

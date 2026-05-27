@@ -33,9 +33,24 @@ struct DeepSeekUsageProvider: LLMUsageProvider {
                 modelBreakdown: nil
             ))
         case .failure(let error):
-            state = .failure(reason: error.localizedDescription ?? "未知错误")
+            state = .failure(mapError(error))
         }
         return ProviderUsageSnapshot(providerID: id, fetchedAt: now(), state: state)
+    }
+
+    private func mapError(_ error: LLMUsageError) -> ProviderUsageError {
+        switch error {
+        case .network(let underlying):
+            return .network(detail: underlying.localizedDescription)
+        case .http(let status, let body):
+            return .http(status: status, body: body)
+        case .decoding:
+            return .decoding
+        case .keychain(let status):
+            return .keychain(status: status)
+        case .cancelled:
+            return .unknown(detail: "cancelled")
+        }
     }
 }
 

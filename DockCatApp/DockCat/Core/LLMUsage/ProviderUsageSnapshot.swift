@@ -7,9 +7,9 @@ struct ProviderUsageSnapshot: Codable, Equatable, Hashable {
 
     enum State: Codable, Equatable, Hashable {
         case missingKey
-        case keyValidNoUsageAccess(hint: String)
+        case keyValidNoUsageAccess
         case success(UsageData)
-        case failure(reason: String)
+        case failure(ProviderUsageError)
     }
 }
 

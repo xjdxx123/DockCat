@@ -161,16 +161,16 @@ private struct ProviderCard: View {
         switch snapshot?.state {
         case .none, .missingKey:
             Text(strings.llmMissingKey).foregroundStyle(.secondary)
-        case .keyValidNoUsageAccess(let hint):
+        case .keyValidNoUsageAccess:
             HStack(spacing: 4) {
-                Text(strings.llmKeyValidNoUsageHintPrefix + hint)
+                Text(strings.llmKeyValidNoUsageHint)
                     .foregroundStyle(.primary)
                 Button(strings.llmHowToGetAdminKey) { onOpenHelp() }
                     .buttonStyle(.link)
             }
         case .success(let data):
             successContent(data: data)
-        case .failure(let reason):
+        case .failure(let error):
             VStack(alignment: .leading, spacing: 4) {
                 if let last = lastSuccessful {
                     successContent(data: last.data).opacity(0.6)
@@ -180,7 +180,7 @@ private struct ProviderCard: View {
                 }
                 HStack(spacing: 8) {
                     Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red)
-                    Text(reason).foregroundStyle(.red).lineLimit(2)
+                    Text(strings.llmErrorText(error)).foregroundStyle(.red).lineLimit(2)
                     Button(strings.llmRetry) { onRetry() }
                         .buttonStyle(.borderless)
                 }

@@ -78,10 +78,9 @@ final class AnthropicUsageProviderTests: XCTestCase {
         )
         let provider = AnthropicUsageProvider(session: URLSessionStub.makeSession())
         let snapshot = try await provider.fetchUsage(apiKey: "sk-ant-api03-normal")
-        guard case .keyValidNoUsageAccess(let hint) = snapshot.state else {
+        guard case .keyValidNoUsageAccess = snapshot.state else {
             return XCTFail("expected .keyValidNoUsageAccess, got \(snapshot.state)")
         }
-        XCTAssertTrue(hint.contains("Admin"))
     }
 
     func testInvalidKey_returnsFailure() async throws {
@@ -89,8 +88,11 @@ final class AnthropicUsageProviderTests: XCTestCase {
                             jsonString: #"{"error":{"message":"invalid x-api-key"}}"#)
         let provider = AnthropicUsageProvider(session: URLSessionStub.makeSession())
         let snapshot = try await provider.fetchUsage(apiKey: "sk-ant-bad")
-        guard case .failure = snapshot.state else {
+        guard case .failure(let error) = snapshot.state else {
             return XCTFail("expected .failure")
+        }
+        if case .invalidKey = error {} else {
+            XCTFail("expected .invalidKey error, got \(error)")
         }
     }
 

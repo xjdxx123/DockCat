@@ -373,10 +373,32 @@ extension AppStrings {
     var llmClearKey: String { language == .chinese ? "清除" : "Clear" }
 
     var llmHowToGetAdminKey: String { language == .chinese ? "如何获取?" : "How to get?" }
-    var llmKeyValidNoUsageHintPrefix: String {
+    var llmKeyValidNoUsageHint: String {
         language == .chinese
-            ? "✓ Key 已连接 · "
-            : "✓ Key connected · "
+            ? "✓ Key 已连接 · 此 key 有效，但需要 Admin Key 才能查询用量"
+            : "✓ Key connected · Key works, but Admin Key required for usage"
+    }
+
+    func llmErrorText(_ error: ProviderUsageError) -> String {
+        switch error {
+        case .invalidKey:
+            return language == .chinese ? "API key 无效" : "Invalid API key"
+        case .network(let detail):
+            return language == .chinese ? "网络错误：\(detail)" : "Network error: \(detail)"
+        case .http(let status, let body):
+            let prefix = body.prefix(120)
+            return "HTTP \(status): \(prefix)"
+        case .decoding:
+            return language == .chinese ? "响应格式异常" : "Unexpected response format"
+        case .keychain(let status):
+            return language == .chinese ? "无法访问钥匙串（\(status)）" : "Keychain error (\(status))"
+        case .adminKeyRequired:
+            return language == .chinese
+                ? "此 key 有效，但需要 Admin Key 才能查询用量"
+                : "Key works, but Admin Key is required to view usage"
+        case .unknown(let detail):
+            return language == .chinese ? "未知错误：\(detail)" : "Unknown error: \(detail)"
+        }
     }
 
     var llmRetry: String { language == .chinese ? "重试" : "Retry" }

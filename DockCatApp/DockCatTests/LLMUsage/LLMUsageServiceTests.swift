@@ -99,14 +99,17 @@ final class LLMUsageServiceTests: XCTestCase {
         }
         let service = makeService(providers: [.deepseek: mock])
         await service.refresh(.deepseek)
-        guard case .failure(let reason)? = service.snapshots[.deepseek]?.state else {
+        guard case .failure(let error)? = service.snapshots[.deepseek]?.state else {
             return XCTFail("expected failure")
         }
-        // Reason should match the thrown error's localizedDescription so we know it propagated;
-        // The exact text varies by macOS version (older versions return "The Internet connection
+        // Detail should match the thrown error's localizedDescription so we know it propagated;
+        // the exact text varies by macOS version (older versions return "The Internet connection
         // appears to be offline", newer ones return a generic NSURLErrorDomain message).
-        XCTAssertEqual(reason, URLError(.notConnectedToInternet).localizedDescription)
-        XCTAssertFalse(reason.isEmpty)
+        guard case .unknown(let detail) = error else {
+            return XCTFail("expected .unknown error, got \(error)")
+        }
+        XCTAssertEqual(detail, URLError(.notConnectedToInternet).localizedDescription)
+        XCTAssertFalse(detail.isEmpty)
     }
 
     func testRefreshAll_invokesAllProvidersConcurrently() async throws {

@@ -56,7 +56,7 @@ final class LLMUsageStoreTests: XCTestCase {
         let updated = ProviderUsageSnapshot(
             providerID: .deepseek,
             fetchedAt: Date(),
-            state: .failure(reason: "Invalid key")
+            state: .failure(.invalidKey)
         )
         store.save(updated)
         XCTAssertEqual(store.loadAll()[.deepseek], updated)
