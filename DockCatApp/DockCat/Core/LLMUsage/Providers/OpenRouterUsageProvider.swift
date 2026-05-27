@@ -24,8 +24,8 @@ struct OpenRouterUsageProvider: LLMUsageProvider {
         let state: ProviderUsageSnapshot.State
         switch result {
         case .success(let decoded):
-            let totalCredits = Decimal(decoded.data.totalCredits)
-            let totalUsage = Decimal(decoded.data.totalUsage)
+            let totalCredits = decoded.data.totalCredits
+            let totalUsage = decoded.data.totalUsage
             let balance = totalCredits - totalUsage
             state = .success(UsageData(
                 balance: Money(amount: balance, currency: "USD"),
@@ -44,8 +44,8 @@ private struct OpenRouterCreditsResponse: Decodable {
     let data: CreditsData
 
     struct CreditsData: Decodable {
-        let totalCredits: Double
-        let totalUsage: Double
+        let totalCredits: Decimal
+        let totalUsage: Decimal
 
         enum CodingKeys: String, CodingKey {
             case totalCredits = "total_credits"

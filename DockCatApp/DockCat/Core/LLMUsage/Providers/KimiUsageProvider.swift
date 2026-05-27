@@ -24,7 +24,7 @@ struct KimiUsageProvider: LLMUsageProvider {
         let state: ProviderUsageSnapshot.State
         switch result {
         case .success(let decoded):
-            let amount = Decimal(decoded.data.availableBalance)
+            let amount = decoded.data.availableBalance
             state = .success(UsageData(
                 balance: Money(amount: amount, currency: "CNY"),
                 totalSpent: nil,
@@ -42,7 +42,7 @@ private struct KimiBalanceResponse: Decodable {
     let data: BalanceData
 
     struct BalanceData: Decodable {
-        let availableBalance: Double
+        let availableBalance: Decimal
 
         enum CodingKeys: String, CodingKey {
             case availableBalance = "available_balance"

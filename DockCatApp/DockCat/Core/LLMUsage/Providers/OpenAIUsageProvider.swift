@@ -64,7 +64,7 @@ struct OpenAIUsageProvider: LLMUsageProvider {
         if case .success(let costResponse) = await session.fetchJSON(costRequest, as: OpenAICostsResponse.self) {
             for bucket in costResponse.data {
                 for entry in bucket.results {
-                    let amount = Decimal(entry.amount.value)
+                    let amount = entry.amount.value
                     costsByModel[entry.lineItem] = Money(amount: amount, currency: entry.amount.currency)
                     totalSpent += amount
                     totalCurrency = entry.amount.currency
@@ -153,7 +153,7 @@ private struct OpenAICostsResponse: Decodable {
         }
     }
     struct Amount: Decodable {
-        let value: Double
+        let value: Decimal
         let currency: String
     }
 }
