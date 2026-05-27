@@ -256,8 +256,9 @@ private struct ProviderCard: View {
     private var keyControls: some View {
         if isEditing || ((snapshot?.state == .missingKey) || snapshot == nil) {
             HStack {
-                SecureField(strings.llmKeyPlaceholder, text: $draftKey)
+                TextField(strings.llmKeyPlaceholder, text: $draftKey)
                     .textFieldStyle(.roundedBorder)
+                    .font(.system(.body, design: .monospaced))
                 Button(strings.llmSaveKey) {
                     onSaveKey(draftKey)
                 }

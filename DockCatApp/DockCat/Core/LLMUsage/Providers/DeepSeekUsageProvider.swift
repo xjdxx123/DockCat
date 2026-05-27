@@ -24,10 +24,21 @@ struct DeepSeekUsageProvider: LLMUsageProvider {
         let state: ProviderUsageSnapshot.State
         switch result {
         case .success(let decoded):
-            let cnyEntry = decoded.balanceInfos.first(where: { $0.currency == "CNY" })
-            let amount = cnyEntry.flatMap { Decimal(string: $0.totalBalance) } ?? 0
+            // 选择余额最高的那个币种条目。若全都 ≤ 0，回退到 CNY。
+            let bestEntry = decoded.balanceInfos
+                .compactMap { entry -> (currency: String, amount: Decimal)? in
+                    guard let amount = Decimal(string: entry.totalBalance) else { return nil }
+                    return (entry.currency, amount)
+                }
+                .max(by: { $0.amount < $1.amount })
+            let balance: Money
+            if let best = bestEntry {
+                balance = Money(amount: best.amount, currency: best.currency)
+            } else {
+                balance = Money(amount: 0, currency: "CNY")
+            }
             state = .success(UsageData(
-                balance: Money(amount: amount, currency: "CNY"),
+                balance: balance,
                 totalSpent: nil,
                 totalSpentLabel: .thisMonth,
                 modelBreakdown: nil

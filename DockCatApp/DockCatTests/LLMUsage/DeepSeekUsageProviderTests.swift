@@ -56,7 +56,7 @@ final class DeepSeekUsageProviderTests: XCTestCase {
         }
     }
 
-    func testNoCNYBalance_returnsZero() async throws {
+    func testEmptyBalanceInfos_returnsZeroCNY() async throws {
         URLSessionStub.stub(
             urlContains: "api.deepseek.com",
             status: 200,
@@ -67,7 +67,30 @@ final class DeepSeekUsageProviderTests: XCTestCase {
         guard case .success(let data) = snapshot.state else {
             return XCTFail("expected .success")
         }
+        // Empty balance_infos array → fall back to CNY 0 (Chinese provider default).
         XCTAssertEqual(data.balance, Money(amount: 0, currency: "CNY"))
+    }
+
+    func testSuccess_picksHigherUSDOverNegativeCNY() async throws {
+        URLSessionStub.stub(
+            urlContains: "api.deepseek.com/user/balance",
+            status: 200,
+            jsonString: """
+            {
+              "is_available": true,
+              "balance_infos": [
+                {"currency": "USD", "total_balance": "25.46"},
+                {"currency": "CNY", "total_balance": "-0.01"}
+              ]
+            }
+            """
+        )
+        let provider = DeepSeekUsageProvider(session: URLSessionStub.makeSession())
+        let snapshot = try await provider.fetchUsage(apiKey: "sk-test")
+        guard case .success(let data) = snapshot.state else {
+            return XCTFail("expected .success, got \(snapshot.state)")
+        }
+        XCTAssertEqual(data.balance, Money(amount: Decimal(string: "25.46")!, currency: "USD"))
     }
 
     func testProviderMetadata() {
