@@ -34,7 +34,7 @@ struct OpenRouterUsageProvider: LLMUsageProvider {
                 modelBreakdown: nil
             ))
         case .failure(let error):
-            state = .failure(reason: error.localizedDescription ?? "Unknown error")
+            state = .failure(reason: error.localizedDescription ?? "未知错误")
         }
         return ProviderUsageSnapshot(providerID: id, fetchedAt: now(), state: state)
     }
