@@ -75,6 +75,7 @@ struct SettingsView: View {
     private let usageStatistics: UsageStatistics
     private let outingCatalog: OutingCatalog
     private let collectableInventory: CollectableInventory
+    private let llmUsageService: LLMUsageService
     private let labelWidth: CGFloat = 112
     private let controlWidth: CGFloat = 196
     private let rowSpacing: CGFloat = 6
@@ -96,6 +97,7 @@ struct SettingsView: View {
         collectableInventory: CollectableInventory,
         dialogueImage: NSImage?,
         availableAssetPackIDs: [String],
+        llmUsageService: LLMUsageService,
         onOpenAssetPacksFolder: @escaping () -> Void,
         onReloadAssetPackIDs: @escaping () -> [String],
         onLoadAssetPack: @escaping (String) -> AssetPackPreviewResult,
@@ -108,6 +110,7 @@ struct SettingsView: View {
         self.usageStatistics = usageStatistics
         self.outingCatalog = outingCatalog
         self.collectableInventory = collectableInventory
+        self.llmUsageService = llmUsageService
         self.onOpenAssetPacksFolder = onOpenAssetPacksFolder
         self.onReloadAssetPackIDs = onReloadAssetPackIDs
         self.onLoadAssetPack = onLoadAssetPack
@@ -130,6 +133,9 @@ struct SettingsView: View {
 
                 collectablesTab
                     .tabItem { Text(strings.settingsCollectablesTab) }
+
+                LLMUsagePanel(service: llmUsageService, language: draft.language)
+                    .tabItem { Text(strings.settingsLLMUsageTab) }
 
                 aboutTab
                     .tabItem { Text(strings.settingsAboutTab) }

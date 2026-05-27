@@ -17,6 +17,7 @@ final class DockCatApplication: NSObject, NSApplicationDelegate {
     private let dockMenuController = DockMenuController()
     private let catMenuController = CatMenuController()
     private let walkAnimator = SpriteAnimator()
+    private let llmUsageService = LLMUsageService()
 
     private var settings: AppSettings = .defaults
     private var activitySpace = DockGeometry.currentActivitySpace(
@@ -70,6 +71,7 @@ final class DockCatApplication: NSObject, NSApplicationDelegate {
             usageStatistics: usageSessionTracker.snapshot,
             outingCatalog: outingCatalog,
             collectableInventory: collectableInventory,
+            llmUsageService: llmUsageService,
             dialogueImage: renderer.randomPose(for: .dialogue).image
         )
         configureSettingsAssetPackActions()

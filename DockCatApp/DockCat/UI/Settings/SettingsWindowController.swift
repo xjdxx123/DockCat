@@ -9,6 +9,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
     private var usageStatistics: UsageStatistics
     private let outingCatalog: OutingCatalog
     private var collectableInventory: CollectableInventory
+    private let llmUsageService: LLMUsageService
     private var dialogueImage: NSImage?
     var onSave: ((AppSettings) -> Void)?
     var assetPackIDsProvider: () -> [String] = { [] }
@@ -35,6 +36,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
         usageStatistics: UsageStatistics,
         outingCatalog: OutingCatalog,
         collectableInventory: CollectableInventory,
+        llmUsageService: LLMUsageService,
         dialogueImage: NSImage?
     ) {
         self.store = store
@@ -42,6 +44,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
         self.usageStatistics = usageStatistics
         self.outingCatalog = outingCatalog
         self.collectableInventory = collectableInventory
+        self.llmUsageService = llmUsageService
         self.dialogueImage = dialogueImage
         super.init()
     }
@@ -105,6 +108,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
             collectableInventory: collectableInventory,
             dialogueImage: dialogueImage,
             availableAssetPackIDs: assetPackIDsProvider(),
+            llmUsageService: llmUsageService,
             onOpenAssetPacksFolder: onOpenAssetPacksFolder,
             onReloadAssetPackIDs: assetPackIDsProvider,
             onLoadAssetPack: onLoadAssetPack,
