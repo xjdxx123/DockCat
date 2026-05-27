@@ -33,10 +33,28 @@ final class SpeechBubbleView: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         wantsLayer = true
-        layer?.backgroundColor = NSColor.windowBackgroundColor.withAlphaComponent(0.94).cgColor
-        layer?.cornerRadius = 8
-        layer?.borderColor = NSColor.separatorColor.cgColor
-        layer?.borderWidth = 1
+
+        if #available(macOS 26.0, *) {
+            // Liquid Glass background (macOS 26 Tahoe+)
+            let glass = NSGlassEffectView()
+            glass.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(glass, positioned: .below, relativeTo: nil)
+            NSLayoutConstraint.activate([
+                glass.leadingAnchor.constraint(equalTo: leadingAnchor),
+                glass.trailingAnchor.constraint(equalTo: trailingAnchor),
+                glass.topAnchor.constraint(equalTo: topAnchor),
+                glass.bottomAnchor.constraint(equalTo: bottomAnchor),
+            ])
+            glass.cornerRadius = 16
+            layer?.cornerRadius = 16
+            layer?.masksToBounds = true
+        } else {
+            // Fallback for macOS 12-25
+            layer?.backgroundColor = NSColor.windowBackgroundColor.withAlphaComponent(0.94).cgColor
+            layer?.cornerRadius = 8
+            layer?.borderColor = NSColor.separatorColor.cgColor
+            layer?.borderWidth = 1
+        }
 
         label.alignment = .center
         label.lineBreakMode = .byWordWrapping
