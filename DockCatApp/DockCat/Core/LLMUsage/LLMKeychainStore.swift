@@ -15,7 +15,7 @@ final class LLMKeychainStore {
             kSecAttrService as String: service,
             kSecAttrAccount as String: provider.rawValue,
             kSecValueData as String: Data(key.utf8),
-            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlock
+            kSecAttrAccessible as String: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
         ]
         let status = SecItemAdd(query as CFDictionary, nil)
         guard status == errSecSuccess else {
@@ -33,10 +33,16 @@ final class LLMKeychainStore {
         ]
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
-        guard status == errSecSuccess, let data = result as? Data else {
+        switch status {
+        case errSecSuccess:
+            guard let data = result as? Data else { return nil }
+            return String(data: data, encoding: .utf8)
+        case errSecItemNotFound:
+            return nil
+        default:
+            DockCatLog.app.error("LLMKeychainStore.load failed for \(provider.rawValue) with status \(status)")
             return nil
         }
-        return String(data: data, encoding: .utf8)
     }
 
     func delete(_ provider: LLMProviderID) throws {
