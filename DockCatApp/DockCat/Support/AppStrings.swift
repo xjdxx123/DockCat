@@ -352,3 +352,43 @@ extension AppStrings {
         }
     }
 }
+
+extension AppStrings {
+    // LLM 用量 Tab
+    var settingsLLMUsageTab: String { language == .chinese ? "LLM 用量" : "LLM Usage" }
+    var llmRefreshAll: String { language == .chinese ? "刷新所有" : "Refresh all" }
+    var llmRefreshing: String { language == .chinese ? "刷新中…" : "Refreshing…" }
+    var llmLastUpdatedPrefix: String { language == .chinese ? "上次更新于" : "Updated at" }
+    var llmNeverUpdated: String { language == .chinese ? "未刷新过" : "Never refreshed" }
+
+    var llmBalanceLabel: String { language == .chinese ? "余额" : "Balance" }
+    var llmThisMonthSpent: String { language == .chinese ? "本月花费" : "This month" }
+    var llmLifetimeSpent: String { language == .chinese ? "累计花费" : "Total spent" }
+    var llmUnknownValue: String { "—" }
+
+    var llmMissingKey: String { language == .chinese ? "未配置" : "Not configured" }
+    var llmKeyPlaceholder: String { language == .chinese ? "粘贴 API key…" : "Paste API key…" }
+    var llmSaveKey: String { language == .chinese ? "保存" : "Save" }
+    var llmEditKey: String { language == .chinese ? "修改" : "Edit" }
+    var llmClearKey: String { language == .chinese ? "清除" : "Clear" }
+
+    var llmHowToGetAdminKey: String { language == .chinese ? "如何获取?" : "How to get?" }
+    var llmKeyValidNoUsageHintPrefix: String {
+        language == .chinese
+            ? "✓ Key 已连接 · "
+            : "✓ Key connected · "
+    }
+
+    var llmRetry: String { language == .chinese ? "重试" : "Retry" }
+    var llmModelBreakdown: String { language == .chinese ? "模型用量明细" : "Model breakdown" }
+    var llmInputTokens: String { language == .chinese ? "输入" : "Input" }
+    var llmOutputTokens: String { language == .chinese ? "输出" : "Output" }
+    var llmShowMoreModels: String { language == .chinese ? "查看更多" : "Show more" }
+
+    func llmRelativeStaleText(minutes: Int) -> String {
+        switch language {
+        case .chinese: return "\(minutes) 分钟前"
+        case .english: return "\(minutes) min ago"
+        }
+    }
+}
